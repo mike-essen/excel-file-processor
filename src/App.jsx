@@ -5,15 +5,42 @@ import DataDisplay from "./components/DataDisplay";
 import ColumnMapper from "./components/ColumnMapper";
 import { useFileReader } from "./hooks/useFileReader";
 
+/**
+ * App Component
+ *
+ * Main application component that orchestrates file upload, data display,
+ * column mapping, and JSON export functionality. Manages the overall state
+ * and coordinates between child components.
+ *
+ * @returns {JSX.Element} Main application layout with file processing features
+ */
 const App = () => {
+  /**
+   * State for managing uploaded file data
+   * @type {Array<object>} Array of objects representing the Excel file data
+   */
   const [fileData, setFileData] = useState([]);
+
+  /**
+   * State for managing column mappings
+   * @type {object} Object mapping source columns to target properties
+   */
   const [columnMappings, setColumnMappings] = useState({});
 
+  /**
+   * Initialize file reader hook with data handling callback
+   * @type {object} Object containing handleFileUpload function and error state
+   */
   const { handleFileUpload, error } = useFileReader((newData) => {
     setFileData(newData);
     setColumnMappings({});
   });
 
+  /**
+   * Handles column mapping updates
+   * @param {string} sourceColumn Source column name
+   * @param {string} targetProperty Target property name
+   */
   const mapColumn = (sourceColumn, targetProperty) => {
     setColumnMappings((prev) => ({
       ...prev,
@@ -21,6 +48,10 @@ const App = () => {
     }));
   };
 
+  /**
+   * Generates JSON string from mapped data
+   * @returns {string} Formatted JSON string with transformed data
+   */
   const generateJSON = () => {
     return JSON.stringify(
       fileData.map((item) =>
@@ -36,6 +67,7 @@ const App = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
+      {/* Header section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h3" gutterBottom>
           Excel File Processor
@@ -45,9 +77,9 @@ const App = () => {
         </Typography>
       </Box>
 
+      {/* File upload section */}
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <FileUpload onFileUpload={handleFileUpload} />
-
         {error && (
           <Box
             sx={{ mt: 2, p: 2, backgroundColor: "#ffebee", borderRadius: 1 }}
@@ -57,8 +89,10 @@ const App = () => {
         )}
       </Paper>
 
+      {/* Conditional rendering of data processing sections */}
       {fileData.length > 0 && (
         <>
+          {/* Data preview section */}
           <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
             <Typography variant="h5" gutterBottom>
               Data Preview
@@ -66,6 +100,7 @@ const App = () => {
             <DataDisplay data={fileData} />
           </Paper>
 
+          {/* Column mapping section */}
           <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
             <Typography variant="h5" gutterBottom>
               Column Mapping
@@ -77,6 +112,7 @@ const App = () => {
             />
           </Paper>
 
+          {/* Export button */}
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="contained"

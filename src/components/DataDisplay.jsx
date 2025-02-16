@@ -13,12 +13,29 @@ import {
 } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
+/**
+ * DataDisplay Component
+ *
+ * A reusable table component that displays data with sorting capabilities.
+ * Handles various data types and provides visual feedback for sorting state.
+ *
+ * @param {object} props Component properties
+ * @param {Array<object>} props.data Array of objects to display in the table
+ */
 const DataDisplay = ({ data }) => {
+  /**
+   * State for tracking current sort configuration
+   * @type {{key: string, direction: "asc" | "desc"}}
+   */
   const [sortConfig, setSortConfig] = useState({
     key: "",
     direction: "asc",
   });
 
+  /**
+   * Memoized sorted data based on current sort configuration
+   * Handles null values, strings, and numbers appropriately
+   */
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return data;
 
@@ -26,19 +43,26 @@ const DataDisplay = ({ data }) => {
       const aVal = a[sortConfig.key];
       const bVal = b[sortConfig.key];
 
+      // Handle null/undefined values by pushing them to the end
       if (aVal === null || aVal === undefined) return 1;
       if (bVal === null || bVal === undefined) return -1;
 
+      // Handle string comparison using localeCompare for proper string sorting
       if (typeof aVal === "string") {
         return sortConfig.direction === "asc"
           ? aVal.localeCompare(bVal)
           : bVal.localeCompare(aVal);
       }
 
+      // Handle numeric comparison
       return sortConfig.direction === "asc" ? aVal - bVal : bVal - aVal;
     });
   }, [data, sortConfig]);
 
+  /**
+   * Handles sort request by toggling direction when same key is clicked
+   * @param {string} key The column key to sort by
+   */
   const requestSort = (key) => {
     setSortConfig((prev) => ({
       key,
@@ -46,12 +70,15 @@ const DataDisplay = ({ data }) => {
     }));
   };
 
+  // Early return if no data available
   if (!data.length) return null;
 
+  // Extract column headers from first data item
   const headers = Object.keys(data[0]);
 
   return (
     <Paper elevation={2} sx={{ overflow: "hidden" }}>
+      {/* Header section with download icon and title */}
       <Box
         sx={{
           p: 2,
@@ -65,6 +92,8 @@ const DataDisplay = ({ data }) => {
         <CloudDownloadIcon />
         <Typography variant="h6">Data Preview</Typography>
       </Box>
+
+      {/* Scrollable table container */}
       <Box sx={{ height: 400, overflow: "auto" }}>
         <Table stickyHeader aria-label="Excel data preview">
           <TableHead>
@@ -112,6 +141,9 @@ const DataDisplay = ({ data }) => {
   );
 };
 
+/**
+ * Prop type definitions for DataDisplay component
+ */
 DataDisplay.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
