@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const FileUpload = ({ onFileUpload }) => (
-  <div className="file-upload">
+  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
     <input
       id="fileInput"
       type="file"
@@ -17,12 +18,26 @@ const FileUpload = ({ onFileUpload }) => (
         variant="contained"
         color="primary"
         component="span"
-        sx={{ cursor: "pointer" }}
+        sx={{
+          cursor: "pointer",
+          "&:hover": {
+            backgroundColor: "primary.dark",
+          },
+        }}
       >
-        Choose File
+        <Box
+          component="span"
+          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+        >
+          <CloudUploadIcon />
+          Choose File
+        </Box>
       </Button>
     </label>
-  </div>
+    <Typography variant="body2" color="text.secondary">
+      (.xlsx files only)
+    </Typography>
+  </Box>
 );
 
 FileUpload.propTypes = {

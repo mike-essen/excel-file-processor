@@ -1,4 +1,3 @@
-// src/components/DataDisplay.jsx
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
@@ -8,7 +7,11 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Paper,
+  Box,
+  Typography,
 } from "@mui/material";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 const DataDisplay = ({ data }) => {
   const [sortConfig, setSortConfig] = useState({
@@ -48,38 +51,64 @@ const DataDisplay = ({ data }) => {
   const headers = Object.keys(data[0]);
 
   return (
-    <div style={{ height: "400px", overflow: "auto" }}>
-      <Table stickyHeader aria-label="Excel data preview">
-        <TableHead>
-          <TableRow>
-            {headers.map((header) => (
-              <TableCell key={header}>
-                <TableSortLabel
-                  active={sortConfig.key === header}
-                  direction={
-                    sortConfig.key === header ? sortConfig.direction : "asc"
-                  }
-                  onClick={() => requestSort(header)}
-                >
-                  {header}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedData.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
+    <Paper elevation={2} sx={{ overflow: "hidden" }}>
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          bgcolor: "primary.main",
+          color: "white",
+        }}
+      >
+        <CloudDownloadIcon />
+        <Typography variant="h6">Data Preview</Typography>
+      </Box>
+      <Box sx={{ height: 400, overflow: "auto" }}>
+        <Table stickyHeader aria-label="Excel data preview">
+          <TableHead>
+            <TableRow>
               {headers.map((header) => (
-                <TableCell key={`${rowIndex}-${header}`}>
-                  {row[header]}
+                <TableCell
+                  key={header}
+                  sx={{ backgroundColor: "primary.light" }}
+                >
+                  <TableSortLabel
+                    active={sortConfig.key === header}
+                    direction={
+                      sortConfig.key === header ? sortConfig.direction : "asc"
+                    }
+                    onClick={() => requestSort(header)}
+                    sx={{ color: "primary.contrast" }}
+                  >
+                    {header}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHead>
+          <TableBody>
+            {sortedData.map((row, rowIndex) => (
+              <TableRow
+                key={rowIndex}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "primary.lightest",
+                  },
+                }}
+              >
+                {headers.map((header) => (
+                  <TableCell key={`${rowIndex}-${header}`}>
+                    {row[header]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </Paper>
   );
 };
 

@@ -31,8 +31,12 @@ const ColumnMapper = ({ data, columnMappings, onMapColumn }) => {
             </MenuItem>
           ))}
         </TextField>
-
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={!selectedColumn}
+        >
           Map Column
         </Button>
       </Box>

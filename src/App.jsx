@@ -1,6 +1,5 @@
-// src/App.jsx
 import React, { useState } from "react";
-import { Container } from "@mui/material";
+import { Container, Box, Typography, Paper, Button } from "@mui/material";
 import FileUpload from "./components/FileUpload";
 import DataDisplay from "./components/DataDisplay";
 import ColumnMapper from "./components/ColumnMapper";
@@ -12,7 +11,7 @@ const App = () => {
 
   const { handleFileUpload, error } = useFileReader((newData) => {
     setFileData(newData);
-    setColumnMappings({}); // Reset mappings when new file is uploaded
+    setColumnMappings({});
   });
 
   const mapColumn = (sourceColumn, targetProperty) => {
@@ -36,29 +35,52 @@ const App = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <h1>Excel File Processor</h1>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h3" gutterBottom>
+          Excel File Processor
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary">
+          Upload your Excel file and transform your data
+        </Typography>
+      </Box>
 
-      <FileUpload onFileUpload={handleFileUpload} />
+      <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+        <FileUpload onFileUpload={handleFileUpload} />
 
-      {error && (
-        <div role="alert" style={{ color: "red" }}>
-          {error}
-        </div>
-      )}
-
-      <DataDisplay data={fileData} />
+        {error && (
+          <Box
+            sx={{ mt: 2, p: 2, backgroundColor: "#ffebee", borderRadius: 1 }}
+          >
+            <Typography color="error">{error}</Typography>
+          </Box>
+        )}
+      </Paper>
 
       {fileData.length > 0 && (
         <>
-          <ColumnMapper
-            data={fileData}
-            columnMappings={columnMappings}
-            onMapColumn={mapColumn}
-          />
+          <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              Data Preview
+            </Typography>
+            <DataDisplay data={fileData} />
+          </Paper>
 
-          <div style={{ marginTop: "1rem" }}>
-            <button
+          <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              Column Mapping
+            </Typography>
+            <ColumnMapper
+              data={fileData}
+              columnMappings={columnMappings}
+              onMapColumn={mapColumn}
+            />
+          </Paper>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              color="primary"
               onClick={() => {
                 const json = generateJSON();
                 const blob = new Blob([json], { type: "application/json" });
@@ -70,8 +92,8 @@ const App = () => {
               }}
             >
               Export JSON
-            </button>
-          </div>
+            </Button>
+          </Box>
         </>
       )}
     </Container>
